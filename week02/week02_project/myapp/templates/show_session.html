@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<br>
+{{id}}
+<br>
+{{message}}
+<br>
+server_datetime: {{server_datetime_local}} [local]
+<br>
+expiry_datetime: {{expiry_datetime_local}} [local]
+<br>
+expiry_datetime: {{expiry_datetime_utc}} [utc]
+<br>
+
+{% endblock %}
