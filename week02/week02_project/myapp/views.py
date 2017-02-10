@@ -12,7 +12,7 @@ def home(request):
 	return render(request, 'home.html', {'key': "value" })
 
 def MyGallery(request):
-	images = Image.objects.all().order_by('?')[:9]
+	images = Image.objects.all().order_by('?')[:12]
 	return render(request, 'gallery.html', {'images': images})
 
 def GetSession(request, id=1):
