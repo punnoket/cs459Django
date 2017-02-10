@@ -5,29 +5,30 @@ from models import Person, Image
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.shortcuts import render
+from django.contrib.sessions.models import Session
+from django.contrib.sessions.backends.db import SessionStore
 
 def home(request):
 	return render(request, 'home.html', {'key': "value" })
 
 def MyGallery(request):
-	images = Image.objects.all().order_by('?')
+	images = Image.objects.all().order_by('?')[:9]
 	return render(request, 'gallery.html', {'images': images})
 
 def GetSession(request, id=1):
-	request.session['x'] = request.session.get('x',0) + 1
-	request.session['y'] = request.session.get('y',0) + 1
-	print id
-	if request.session['x']==1:
-		exp = timezone.localtime(timezone.now())  +timedelta(seconds=10)
-		request.session.set_expiry( 10 )
-	message="x: %s, y: %s"%( request.session['x'], request.session['y'] )
+	list_id = request.session.get('key', [])
+	list_id.append(id)
+
+	image = Image.objects.get(id=id)
+	request.session['key'] = list_id
+	for i in Session.objects.all():
+		print SessionStore().decode(i.session_data)
+
+	request.session.set_expiry( 10 )
 	return render(request, 'show_session.html',
 		{
-			'message': message,
-			'server_datetime_local': timezone.localtime( timezone.now() ).isoformat(),
-			'expiry_datetime_local': timezone.localtime( request.session.get_expiry_date() ).isoformat(),
-			'expiry_datetime_utc': request.session.get_expiry_date().isoformat(),
-			'id' :id
+			'id' :id,
+			'image' :image
 		})
 
 
